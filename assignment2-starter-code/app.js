@@ -16,6 +16,10 @@
         {
             name: "Chocolate",
             quantity: "5"
+        },
+        {
+            name: "White Chocolate",
+            quantity: "5"
         }
     ];
 
