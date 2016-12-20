@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-        var listF = [
+        var list = [
         {
             name: "Milk",
             quantity: "2"
@@ -20,46 +20,42 @@
     ];
 
     angular.module('ShoppingListCheckOff', [])
-    .controller('ToBuyList', ToBuyList)
-    .controller('BoughtList', BoughtList)
-    .factory('ShoppingListFactory', ShoppingListFactory);
+    .controller('ToBuyController', ToBuyController)
+    .controller('AlreadyBoughtController', AlreadyBoughtController)
+    .service('ShoppingListCheckOffService', ShoppingListCheckOffService);
 
-    ToBuyList.$inject = ['ShoppingListFactory'];
-    function ToBuyList(ShoppingListFactory) {
-        var list = this;
-        var shoppingList = ShoppingListFactory();
-        list.items = listF;
+    ToBuyController.$inject = ['ShoppingListCheckOffService'];
+    function ToBuyController(ShoppingListCheckOffService) {
+        var toBuy = this;
+        toBuy.items = list;
 
-        list.itemName = '';
-        list.itemQuantity = '';
+        toBuy.itemName = '';
+        toBuy.itemQuantity = '';
 
 
-        list.buy = function (itemIndex) {
-            console.log(list.items[itemIndex]);
-            shoppingList.addItem(list.items[itemIndex].name, list.items[itemIndex].quantity);
-            list.items.splice(itemIndex, 1);
+        toBuy.buy = function (itemIndex) {
+            ShoppingListCheckOffService.addItem(toBuy.items[itemIndex].name, toBuy.items[itemIndex].quantity);
+            toBuy.items.splice(itemIndex, 1);
         }
 
-        list.empty = function () {
-            return list.items.length == 0;
+        toBuy.empty = function () {
+            return toBuy.items.length == 0;
         }
     }
 
-    BoughtList.$inject = ['ShoppingListFactory'];
-    function BoughtList(ShoppingListFactory) {
-        var listB = this;
-        var shoppingList = ShoppingListFactory();
+    AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
+    function AlreadyBoughtController(ShoppingListCheckOffService) {
+        var Bought = this;
 
-        listB.items = shoppingList.getItems(); 
-        console.log(listB.items);
+        Bought.items = ShoppingListCheckOffService.getItems(); 
 
-        listB.empty = function () {
-            return listB.items.length == 0;
+        Bought.empty = function () {
+            return Bought.items.length == 0;
         }
     }
 
 
-    function ShoppingListService() {
+    function ShoppingListCheckOffService() {
         var service = this;
         var items = [];
 
@@ -73,16 +69,6 @@
                 quantity: quantity
             };
             items.push(item);
-            console.log(items);
         }
     }
-
-    function ShoppingListFactory() {
-        var factory = function() {
-            return new ShoppingListService()
-        };
-        return factory;
-    }
-
-
 })();
